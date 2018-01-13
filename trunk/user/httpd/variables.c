@@ -174,6 +174,7 @@
 #endif
 			{"front_led_all", "", NULL, EVM_RESTART_TWEAKS},
 			{"front_led_wan", "", NULL, EVM_RESTART_TWEAKS},
+			{"front_led_isp", "", NULL, EVM_RESTART_TWEAKS},
 			{"front_led_lan", "", NULL, EVM_RESTART_TWEAKS},
 			{"front_led_usb", "", NULL, EVM_RESTART_TWEAKS},
 			{"front_led_wif", "", NULL, EVM_RESTART_TWEAKS},

@@ -210,7 +210,20 @@ init_gpio_leds_buttons(void)
 	/* hide WAN soft-led  */
 #if defined (BOARD_GPIO_LED_WAN)
 	cpu_gpio_set_pin_direction(BOARD_GPIO_LED_WAN, 1);
+#if defined (BOARD_GPIO_LED_WAN_INVERTED)
+	cpu_gpio_set_pin(BOARD_GPIO_LED_WAN, LED_ON);
+#else
 	cpu_gpio_set_pin(BOARD_GPIO_LED_WAN, LED_OFF);
+#endif
+#endif
+	/* hide ISP soft-led */
+#if defined (BOARD_GPIO_LED_ISP)
+	cpu_gpio_set_pin_direction(BOARD_GPIO_LED_ISP, 1);
+#if defined (BOARD_GPIO_LED_ISP_INVERTED)
+	cpu_gpio_set_pin(BOARD_GPIO_LED_ISP, LED_ON);
+#else
+	cpu_gpio_set_pin(BOARD_GPIO_LED_ISP, LED_OFF);
+#endif
 #endif
 	/* hide LAN soft-led  */
 #if defined (BOARD_GPIO_LED_LAN)
@@ -679,6 +692,17 @@ LED_CONTROL(int gpio_led, int flag)
 #if defined (BOARD_GPIO_LED_WAN)
 	case BOARD_GPIO_LED_WAN:
 		front_led_x = nvram_get_int("front_led_wan");
+#if defined (BOARD_GPIO_LED_WAN_INVERTED)
+		flag = (flag == LED_ON) ? LED_OFF : LED_ON;
+#endif
+		break;
+#endif
+#if defined (BOARD_GPIO_LED_ISP)
+	case BOARD_GPIO_LED_ISP:
+		front_led_x = nvram_get_int("front_led_isp");
+#if defined (BOARD_GPIO_LED_ISP_INVERTED)
+		flag = (flag == LED_ON) ? LED_OFF : LED_ON;
+#endif
 		break;
 #endif
 #if defined (BOARD_GPIO_LED_LAN)
@@ -911,6 +935,10 @@ shutdown_router(int level)
 #if defined (BOARD_GPIO_LED_WAN)
 	LED_CONTROL(BOARD_GPIO_LED_WAN, LED_OFF);
 #endif
+#if defined (BOARD_GPIO_LED_ISP)
+	LED_CONTROL(BOARD_GPIO_LED_ISP, LED_OFF);
+#endif
+
 
 	storage_save_time(10);
 	write_storage_to_mtd();

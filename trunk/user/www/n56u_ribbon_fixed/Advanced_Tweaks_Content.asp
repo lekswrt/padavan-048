@@ -155,6 +155,7 @@ function initial(){
 		showhide_div("row_led_pwr", 0);
 
 	showhide_div("row_led_wan", support_led_wan());
+	showhide_div("row_led_isp", support_led_isp());	
 	showhide_div("row_led_lan", support_led_lan());
 	showhide_div("row_led_usb", support_led_usb());
 	showhide_div("row_led_wif", support_led_wif());
@@ -190,6 +191,7 @@ function done_validating(action){
 function change_led_all(){
 	var led_all = document.form.front_led_all[0].checked;
 	showhide_div("row_led_wan", led_all && support_led_wan());
+	showhide_div("row_led_isp", led_all && support_led_isp());	
 	showhide_div("row_led_lan", led_all && support_led_lan());
 	showhide_div("row_led_usb", led_all && support_led_usb());
 	showhide_div("row_led_wif", led_all && support_led_wif());
@@ -436,9 +438,20 @@ function change_led_all(){
                                             <td>
                                                 <select name="front_led_wan" class="input" style="width: 320px;">
                                                     <option value="0" <% nvram_match_x("", "front_led_wan", "0","selected"); %>><#btn_Disable#></option>
-                                                    <option value="1" <% nvram_match_x("", "front_led_wan", "1","selected"); %>><#TweaksLEDItem00#></option>
-                                                    <option value="2" <% nvram_match_x("", "front_led_wan", "2","selected"); %>><#TweaksLEDItem03#> (*)</option>
+                                                    <option value="1" <% nvram_match_x("", "front_led_wan", "1","selected"); %>><#TweaksLEDItem00#> (*)</option>
+                                                    <option value="2" <% nvram_match_x("", "front_led_wan", "2","selected"); %>><#TweaksLEDItem03#></option>
                                                     <option value="3" <% nvram_match_x("", "front_led_wan", "3","selected"); %>><#TweaksLEDItem04#></option>
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr id="row_led_isp">
+                                            <th><#TweaksLEDISP#></th>
+                                            <td>
+                                                <select name="front_led_isp" class="input" style="width: 320px;">
+                                                    <option value="0" <% nvram_match_x("", "front_led_isp", "0","selected"); %>><#btn_Disable#></option>
+                                                    <option value="1" <% nvram_match_x("", "front_led_isp", "1","selected"); %>><#TweaksLEDItem00#></option>
+                                                    <option value="2" <% nvram_match_x("", "front_led_isp", "2","selected"); %>><#TweaksLEDItem03#> (*)</option>
+                                                    <option value="3" <% nvram_match_x("", "front_led_isp", "3","selected"); %>><#TweaksLEDItem04#></option>
                                                 </select>
                                             </td>
                                         </tr>
@@ -447,8 +460,8 @@ function change_led_all(){
                                             <td>
                                                 <select name="front_led_lan" class="input" style="width: 320px;">
                                                     <option value="0" <% nvram_match_x("", "front_led_lan", "0","selected"); %>><#btn_Disable#></option>
-                                                    <option value="1" <% nvram_match_x("", "front_led_lan", "1","selected"); %>><#TweaksLEDItem00#> (*)</option>
-                                                    <option value="2" <% nvram_match_x("", "front_led_lan", "2","selected"); %>><#TweaksLEDItem01#></option>
+                                                    <option value="1" <% nvram_match_x("", "front_led_lan", "1","selected"); %>><#TweaksLEDItem00#></option>
+                                                    <option value="2" <% nvram_match_x("", "front_led_lan", "2","selected"); %>><#TweaksLEDItem01#> (*)</option>
                                                     <option value="3" <% nvram_match_x("", "front_led_lan", "3","selected"); %>><#TweaksLEDItem02#></option>
                                                 </select>
                                             </td>

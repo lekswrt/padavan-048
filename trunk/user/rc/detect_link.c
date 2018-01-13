@@ -80,26 +80,46 @@ dl_reset_state(void)
 	dl_status_wisp_old = 0;
 }
 
+static int
+if_isp_active() {
+	if (!get_wan_wisp_active(NULL) && !get_usb_modem_wan(0)) {
+		return (dl_status_wan && has_wan_gw4() && has_wan_ip4(1)) ? 1 : 0;
+	}
+	return -1;
+}
+
 static void
 dl_handle_link_wan(void)
 {
-#if defined (BOARD_GPIO_LED_WAN) || defined (BOARD_GPIO_LED_LAN)
+#if defined (BOARD_GPIO_LED_WAN) || (BOARD_GPIO_LED_ISP) || defined (BOARD_GPIO_LED_LAN)
 	int front_led_x;
 #endif
 
 	if (dl_status_wan_old != dl_status_wan) {
 		dl_status_wan_old = dl_status_wan;
-		
+
 		nvram_set_int_temp("link_wan", (dl_status_wan) ? 1 : 0);
+		int isp_active, isp_checked = 0;
 #if defined (BOARD_GPIO_LED_WAN)
 		front_led_x = nvram_get_int("front_led_wan");
 		if (front_led_x == 1)
 			LED_CONTROL(BOARD_GPIO_LED_WAN, (dl_status_wan) ? LED_ON : LED_OFF);
 		else if (front_led_x == 2) {
-			if (!get_wan_wisp_active(NULL) && !get_usb_modem_wan(0)) {
-				int dl_state = (dl_status_wan && has_wan_gw4() && has_wan_ip4(1)) ? 1 : 0;
-				LED_CONTROL(BOARD_GPIO_LED_WAN, (dl_state) ? LED_ON : LED_OFF);
-			}
+			isp_active = if_isp_active();
+			if (isp_active != -1)
+				LED_CONTROL(BOARD_GPIO_LED_WAN, isp_active ? LED_ON : LED_OFF);
+			isp_checked = 1;
+		}
+#endif
+#if defined (BOARD_GPIO_LED_ISP)
+		front_led_x = nvram_get_int("front_led_isp");
+		if (front_led_x == 1)
+			LED_CONTROL(BOARD_GPIO_LED_ISP, (dl_status_wan) ? LED_ON : LED_OFF);
+		else if (front_led_x == 2) {
+			if (!isp_checked)
+				isp_active = if_isp_active();
+			if (isp_active != -1)
+				LED_CONTROL(BOARD_GPIO_LED_ISP, isp_active ? LED_ON : LED_OFF);
 		}
 #endif
 #if defined (BOARD_GPIO_LED_LAN)
@@ -169,21 +189,37 @@ dl_handle_link_lan(void)
 	}
 }
 
+static int
+if_isp_active2() {
+	return (dl_status_wisp && has_wan_gw4() && has_wan_ip4(1)) ? 1 : 0;
+}
+
 static void
 dl_handle_link_wisp(void)
 {
 #if defined (BOARD_GPIO_LED_WAN)
 	int front_led_wan;
 #endif
-
+#if defined (BOARD_GPIO_LED_ISP)
+	int front_led_isp;
+#endif
 	if (dl_status_wisp_old != dl_status_wisp) {
 		dl_status_wisp_old = dl_status_wisp;
-		
+		int isp_active, isp_checked = 0;
 #if defined (BOARD_GPIO_LED_WAN)
 		front_led_wan = nvram_get_int("front_led_wan");
 		if (front_led_wan == 2) {
-			int dl_state = (dl_status_wisp && has_wan_gw4() && has_wan_ip4(1)) ? 1 : 0;
-			LED_CONTROL(BOARD_GPIO_LED_WAN, (dl_state) ? LED_ON : LED_OFF);
+			isp_active = if_isp_active2();
+			LED_CONTROL(BOARD_GPIO_LED_WAN, (isp_active) ? LED_ON : LED_OFF);
+			isp_checked = 1;
+		}
+#endif
+#if defined (BOARD_GPIO_LED_ISP)
+		front_led_isp = nvram_get_int("front_led_isp");
+		if (front_led_isp == 2) {
+			if (!isp_checked)
+				isp_active = if_isp_active2();
+			LED_CONTROL(BOARD_GPIO_LED_ISP, (isp_active) ? LED_ON : LED_OFF);
 		}
 #endif
 	}
@@ -263,12 +299,25 @@ dl_on_timer(void)
 #endif
 }
 
+static int
+if_isp_active3() {
+	int dl_state = 0;
+	if (get_wan_wisp_active(&dl_status_wisp))
+		dl_state = (dl_status_wisp && has_wan_gw4() && has_wan_ip4(1)) ? 1 : 0;
+	else if (!get_usb_modem_wan(0))
+		dl_state = (dl_status_wan  && has_wan_gw4() && has_wan_ip4(1)) ? 1 : 0;
+	else
+		dl_state = (                  has_wan_gw4() && has_wan_ip4(0)) ? 1 : 0;
+	return dl_state;
+}
+
 static void
 dl_update_leds(void)
 {
 	int front_led_x;
-#if defined (BOARD_GPIO_LED_WAN) || defined (BOARD_GPIO_LED_LAN)
+#if defined (BOARD_GPIO_LED_WAN) || defined (BOARD_GPIO_LED_ISP) || defined (BOARD_GPIO_LED_LAN)
 	int dl_state;
+	int isp_checked = 0;
 #endif
 
 #if defined (BOARD_GPIO_LED_WAN)
@@ -278,12 +327,8 @@ dl_update_leds(void)
 		if (front_led_x == 1) {
 			dl_state = dl_status_wan;
 		} else if (front_led_x == 2) {
-			if (get_wan_wisp_active(&dl_status_wisp))
-				dl_state = (dl_status_wisp && has_wan_gw4() && has_wan_ip4(1)) ? 1 : 0;
-			else if (!get_usb_modem_wan(0))
-				dl_state = (dl_status_wan  && has_wan_gw4() && has_wan_ip4(1)) ? 1 : 0;
-			else
-				dl_state = (                  has_wan_gw4() && has_wan_ip4(0)) ? 1 : 0;
+			dl_state = if_isp_active3();
+			isp_checked = 1;
 		} else if (front_led_x == 3) {
 			dl_state = get_internet_state_cached();
 		}
@@ -294,6 +339,29 @@ dl_update_leds(void)
 			dl_state = get_internet_state_cached();
 	}
 	LED_CONTROL(BOARD_GPIO_LED_WAN, (dl_state) ? LED_ON : LED_OFF);
+#endif
+#if defined (BOARD_GPIO_LED_ISP)
+	front_led_x = nvram_get_int("front_led_isp");
+	if (!dl_is_ap_mode) {
+		if (front_led_x == 1) {
+			dl_state = dl_status_wan;
+		} else if (front_led_x == 2) {
+			if (!isp_checked)
+				dl_state = if_isp_active3();
+		} else if (front_led_x == 3) {
+			dl_state = get_internet_state_cached();
+		} else {
+			dl_state = 0;
+		}
+	} else {
+		if (front_led_x == 1)
+			dl_state = dl_status_wan;
+		else if (front_led_x == 3)
+			dl_state = get_internet_state_cached();
+		else
+			dl_state = 0;
+	}
+	LED_CONTROL(BOARD_GPIO_LED_ISP, (dl_state) ? LED_ON : LED_OFF);
 #endif
 #if defined (BOARD_GPIO_LED_LAN)
 	front_led_x = nvram_get_int("front_led_lan");

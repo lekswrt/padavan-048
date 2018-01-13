@@ -80,24 +80,44 @@ set_wan_unit_param(int unit, const char* param_name)
 	nvram_set_temp(wanN_param, nvram_safe_get(wan_param));
 }
 
+static int if_isp_active4(int is_wan_up, int is_modem_unit)
+{
+	int has_link = 0;
+	if (is_wan_up) {
+		has_link = 1;
+		if (!get_wan_wisp_active(&has_link) && !is_modem_unit)
+			has_link = get_wan_ether_link_cached();
+	}
+	return has_link;
+}
+
 static void
 control_wan_led_isp_state(int is_wan_up, int is_modem_unit)
 {
+#if defined (BOARD_GPIO_LED_WAN) || defined (BOARD_GPIO_LED_ISP)
+	int isp_active, isp_checked = 0;
 #if defined (BOARD_GPIO_LED_WAN)
 	int front_led_wan = nvram_get_int("front_led_wan");
-
 	if (front_led_wan == 2) {
-		int has_link = 0;
-		if (is_wan_up) {
-			has_link = 1;
-			if (!get_wan_wisp_active(&has_link) && !is_modem_unit)
-				has_link = get_wan_ether_link_cached();
-		}
-		LED_CONTROL(BOARD_GPIO_LED_WAN, (is_wan_up && has_link) ? LED_ON : LED_OFF);
+		isp_active = if_isp_active4(is_wan_up, is_modem_unit);
+		LED_CONTROL(BOARD_GPIO_LED_WAN, (is_wan_up && isp_active) ? LED_ON : LED_OFF);
+		isp_checked = 1;
 	} else if (front_led_wan == 3) {
 		if (!is_wan_up)
 			LED_CONTROL(BOARD_GPIO_LED_WAN, LED_OFF);
 	}
+#endif
+#if defined (BOARD_GPIO_LED_ISP)
+	int front_led_isp = nvram_get_int("front_led_isp");
+	if (front_led_isp == 2) {
+		if (!isp_checked)
+			isp_active = if_isp_active4(is_wan_up, is_modem_unit);
+		LED_CONTROL(BOARD_GPIO_LED_ISP, (is_wan_up && isp_active) ? LED_ON : LED_OFF);
+	} else if (front_led_isp ==3) {
+		if (!is_wan_up)
+			LED_CONTROL(BOARD_GPIO_LED_ISP, LED_OFF);
+	}
+#endif
 #endif
 }
 

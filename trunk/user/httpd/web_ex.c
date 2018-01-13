@@ -2289,6 +2289,11 @@ ej_hardware_pins_hook(int eid, webs_t wp, int argc, char **argv)
 #else
 	int has_led_all = 0;
 #endif
+#if defined (BOARD_GPIO_LED_ISP)
+	int has_led_isp = 1;
+#else
+	int has_led_isp = 0;
+#endif
 #if defined (BOARD_GPIO_LED_WAN)
 	int has_led_wan = 1;
 #else
@@ -2320,6 +2325,7 @@ ej_hardware_pins_hook(int eid, webs_t wp, int argc, char **argv)
 		"function support_but_fn1() { return %d;}\n"
 		"function support_but_fn2() { return %d;}\n"
 		"function support_led_all() { return %d;}\n"
+		"function support_led_isp() { return %d;}\n"
 		"function support_led_wan() { return %d;}\n"
 		"function support_led_lan() { return %d;}\n"
 		"function support_led_usb() { return %d;}\n"
@@ -2330,6 +2336,7 @@ ej_hardware_pins_hook(int eid, webs_t wp, int argc, char **argv)
 		has_but_fn1,
 		has_but_fn2,
 		has_led_all,
+		has_led_isp,
 		has_led_wan,
 		has_led_lan,
 		has_led_usb,
