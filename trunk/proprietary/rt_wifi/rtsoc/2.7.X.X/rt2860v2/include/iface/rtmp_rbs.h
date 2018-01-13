@@ -102,7 +102,11 @@
 #if defined (CONFIG_RT2880_FLASH_32M)
 #define RF_OFFSET				0x1FE0000
 #else
+#if defined (CONFIG_RT_FIRST_IF_RF_OFFSET)
+#define RF_OFFSET				CONFIG_RT_FIRST_IF_RF_OFFSET
+#else
 #define RF_OFFSET				0x40000
+#endif
 #endif
 
 #ifdef LINUX

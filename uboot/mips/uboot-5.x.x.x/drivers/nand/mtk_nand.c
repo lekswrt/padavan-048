@@ -5145,9 +5145,9 @@ int ranand_erase_write(char *buf, unsigned int offs, int count)
 	blocksize = mtd->erasesize;
 	blockmask = blocksize - 1;
 
-	if ((uint64_t)count > (nand_chip->chipsize - (uint64_t)(CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE))) 	{
+	if ((uint64_t)count > (nand_chip->chipsize - (uint64_t)(CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE + CFG_ROMFILE_SIZE + CFG_ROM_SIZE))) 	{
 		printf("Abort: image size larger than %lld!\n\n", nand_chip->chipsize  -
-					(uint64_t)(CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE));
+					(uint64_t)(CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE + CFG_ROMFILE_SIZE + CFG_ROM_SIZE));
 		return -1;
 	}
 

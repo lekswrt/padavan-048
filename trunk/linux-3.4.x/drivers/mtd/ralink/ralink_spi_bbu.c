@@ -33,7 +33,11 @@
 #include <ralink/ralink_gpio.h>
 
 #include "ralink-flash.h"
+#if defined (CONFIG_MTD_BOARD_TPLINK)
+#include "tplink-flash-map.h"
+#else 
 #include "ralink-flash-map.h"
+#endif
 #include "ralink_spi_bbu.h"
 
 //#define SPI_DEBUG

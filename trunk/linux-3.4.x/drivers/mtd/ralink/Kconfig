@@ -31,6 +31,11 @@ choice
 		select MTD_NAND_ECC
 endchoice
 
+config MTD_BOARD_TPLINK
+	bool "Use TP-Link board partitions scheme"
+	default n
+	depends on MTD_SPI_RALINK
+
 config MTD_SPI_FAST_CLOCK
 	bool "Use SPI fast clock, up to 50MHz"
 	default n

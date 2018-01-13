@@ -1098,7 +1098,7 @@ int copy_image(int dir, unsigned long image_size)
 #else //CFG_ENV_IS_IN_FLASH
 		printf("\nCopy Image:\nImage2(0x%X) to Image1(0x%X), size=0x%X\n", CFG_KERN2_ADDR, CFG_KERN_ADDR, image_size);
 #if defined (ON_BOARD_16M_FLASH_COMPONENT) && (defined (RT2880_ASIC_BOARD) || defined (RT2880_FPGA_BOARD) || defined (RT3052_MP1))
-		len = 0x400000 - (CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE);
+		len = 0x400000 - (CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE + CFG_ROMFILE_SIZE + CFG_ROM_SIZE);
 		if (image_size <= len) {
 			e_end = CFG_KERN_ADDR + image_size - 1;
 			if (get_addr_boundary(&e_end) != 0)
@@ -1409,7 +1409,7 @@ int flash_kernel_image(ulong image_ptr, ulong image_size)
 	printf("\n Copy %d bytes to Flash... \n", image_size);
 	rrc = raspi_erase_write((char *)image_ptr, CFG_KERN_ADDR-CFG_FLASH_BASE, image_size);
 #else
-	if (image_size > (gd->bd->bi_flashsize - (CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE))) {
+	if (image_size > (gd->bd->bi_flashsize - (CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE + CFG_ROMFILE_SIZE + CFG_ROM_SIZE))) {
 		printf("%s image size %d too big!\n", "Linux", image_size);
 		return -1;
 	}

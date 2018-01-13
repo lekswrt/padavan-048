@@ -226,9 +226,9 @@ int do_flerase (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	{
 		printf("\n Erase linux kernel block !!\n");
 		printf("From 0x%X To 0x%X\n", CFG_KERN_ADDR, CFG_KERN_ADDR + flash_info[0].size
-				- (CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE) -1);
+				- (CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE + CFG_ROMFILE_SIZE + CFG_ROM_SIZE) -1);
 		rcode = flash_sect_erase(CFG_KERN_ADDR, CFG_KERN_ADDR + flash_info[0].size
-				-(CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE) -1);
+				-(CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE + CFG_ROMFILE_SIZE + CFG_ROM_SIZE) -1);
 	
 		return rcode;
 	}

@@ -852,9 +852,9 @@ int raspi_erase_write(char *buf, unsigned int offs, int count)
 	ra_dbg("%s: offs:%x, count:%x\n", __func__, offs, count);
 
 	if (count > (spi_chip_info->sector_size * spi_chip_info->n_sectors) -
-			(CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE)) {
+			(CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE + CFG_ROMFILE_SIZE + CFG_ROM_SIZE)) {
 		printf("Abort: image size larger than %d!\n\n", (spi_chip_info->sector_size * spi_chip_info->n_sectors) -
-				(CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE));
+				(CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE + CFG_ROMFILE_SIZE + CFG_ROM_SIZE));
 		udelay(10*1000*1000);
 		return -1;
 	}
@@ -1024,9 +1024,9 @@ int do_flerase (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	{
 		printf("\n Erase linux kernel block !!\n");
 		printf("From 0x%X length 0x%X\n", CFG_KERN_ADDR - CFG_FLASH_BASE,
-				size - (CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE));
+				size - (CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE + CFG_ROMFILE_SIZE + CFG_ROM_SIZE));
 		rcode = raspi_erase(CFG_KERN_ADDR - CFG_FLASH_BASE,
-				size - (CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE));
+				size - (CFG_BOOTLOADER_SIZE + CFG_CONFIG_SIZE + CFG_FACTORY_SIZE + CFG_ROMFILE_SIZE + CFG_ROM_SIZE));
 		return rcode;
 	}
 	else if (strcmp(argv[1], "uboot") == 0) 

@@ -21,7 +21,11 @@
 
 #include "ralink-flash.h"
 #if defined (CONFIG_MTD_NOR_RALINK)
+#if defined (CONFIG_MTD_BOARD_TPLINK)
+#include "tplink-flash-map.h"
+#else
 #include "ralink-flash-map.h"
+#endif
 #endif
 
 int ra_check_flash_type(void)

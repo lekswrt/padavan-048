@@ -86,8 +86,11 @@
 #endif
 
 #define NVRAM_OFFSET				0x30000
+#if defined (CONFIG_RT_FIRST_IF_RF_OFFSET)
+#define RF_OFFSET					CONFIG_RT_FIRST_IF_RF_OFFSET
+#else
 #define RF_OFFSET					0x40000
-
+#endif
 
 
 #ifdef LINUX
