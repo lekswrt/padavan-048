@@ -1,7 +1,7 @@
 /* TP-LINK ARCHER C20 V1 */
 
-#define BOARD_PID		"ARCHER-C20"
-#define BOARD_NAME		"ARCHER-C20"
+#define BOARD_PID		"TL_C20-V1"
+#define BOARD_NAME		"TL_C20-V1"
 #define BOARD_DESC		"TP-Link Archer C20 Wireless Router"
 #define BOARD_VENDOR_NAME	"TP-LINK Technologies CO., LTD."
 #define BOARD_VENDOR_URL	"http://www.tp-link.com/en"
